@@ -39,7 +39,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:4|max:20'
         ],
         [
-            'exists.email' => 'email address you entered is not exist, please try again'
+            'email.exists' => 'email address you entered is not exist, please try again'
         ]);
 
         DB::table('users')->where('email', $request->email)->update([

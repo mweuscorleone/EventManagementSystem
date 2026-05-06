@@ -14,10 +14,11 @@ class UserManagementController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:4|max:20',
-            'role' => 'sometimes|in:admin,attendee,gate_scanner,event_organizer'
+            'role' => 'sometimes|in:admin,guest,scanner,organizer'
         ],
     [
-        'email.unique' => 'email already exists please use another email'
+        'email.unique' => 'email already exists please use another email',
+        'role.in' => 'role must be in [admin,guest,scanner,organizer]'
     ]);
 
 
@@ -25,7 +26,7 @@ class UserManagementController extends Controller
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
-        'role' => $request->role ?? 'attendee',
+        'role' => $request->role ?? 'guest',
         'email_verified_at' => now(),
         'created_at' => now(),
         'updated_at' => now()
@@ -57,7 +58,7 @@ class UserManagementController extends Controller
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email',
             'password' => 'sometimes|string|min:4|max:20',
-            'role' => 'sometimes|string|in:attendee,admin,event_organizer,gate_scanner'
+            'role' => 'sometimes|string|in:guest,admin,organizer,scanner'
         ],
        [
         'email.unique' => 'email already existis please enter another email'
