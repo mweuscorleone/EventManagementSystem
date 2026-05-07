@@ -14,10 +14,14 @@ class QrCode extends Model
         'booking_id',
         'token',
         'is_used',
-        'used_at'
+        'used_at',
+        'scanned_by'
     ];
 
     public function bookings(){
         return $this->belongsTo(Booking::class);
+    }
+    public function scanner(){
+        return $this->belongsTo(User::class, 'scanned_by');
     }
 }

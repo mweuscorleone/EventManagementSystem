@@ -48,5 +48,68 @@ class VenueControllelr extends Controller
 
     
     }
+
+    public function updateVenue(Request $request, $venueId){
+        $userId = auth()->id();
+        $venue = DB::table('venues')->where('id', $venueId)->first();
+
+        if(!$venue){
+            return response()->json([
+                'message' => 'no venue found matches to your choice please try again!'
+            ], 404);
+        }
+
+        $request->validate([
+            'name' => 'sometimes|string|unique:venues,name',
+            'venue_type' => 'sometimes|string|in:hotel,hall,conference_center,outdoor',
+            'city' => 'sometimes|string',
+            'location' => 'sometimes|string',
+            'capacity' => 'sometimes|numeric|min:1',
+            'description' => 'sometimes|string|max:255'
+        ]);
+
+        DB::table('venues')->where('id', $venue->id)->update([
+            'name' => $request->name ?? $venue->name,
+            'venue_type' => $request->venue_type ?? $venue->venue_type,
+            'city' => $request->city ?? $venue->city,
+            'location' => $request->location ?? $venue->location,
+            'capacity' => $request->capacity ?? $venue->capacity,
+            'description' => $request->description ??  $venue->description,
+            'is_active' => $request->is_active ?? $venue->is_active,
+            'updated_by' => $userId,
+            'updated_at' => now()
+        ]);
+
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'venue updated successfully!'
+        ], 200);
     
+    }
+
+
+    public function removeVenue($venueId){
+        $venue = DB::table('venues')->where('id', $venueId)->first();
+
+        if(!$venue){
+            return response()->json([
+                'message' => 'no venue found matching to your choice please try again'
+            ],404);
+        }
+
+        DB::table('venues')->where('id', $venue->id)->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'venue deleted successfully'
+        ], 200);
+    }
+
+    public function getVenues(){
+        $venues = DB::table('venues')->get();
+
+
+        return response()->json($venues);
+    }
 }

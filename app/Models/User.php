@@ -63,5 +63,9 @@ class User extends Authenticatable
         return $this->hasMany(EventTicket::class, 'updated_by');
 
     }
+
+    public function scan_qrCodes(){
+        return $this->hasMany(QrCode::class, 'scanned_by');
+    }
      
 }

@@ -178,6 +178,24 @@ class TicketConroller extends Controller
 
         return response()->json($eventTickets);
     }
+
+    //SHOW REMAINING TICKETS 
+
+    public function getRemainingTickets(){
+
+        $tickets = DB::table('event_tickets')->join('events', 'event_tickets.event_id', '=', 'events.id')
+                    ->join('ticket_types', 'event_tickets.ticket_type_id', 'ticket_types.id')
+                    ->select(
+                        'events.title as Event',
+                        'ticket_types.name as Ticket',
+                        'event_tickets.quantity as Ticket_quantiy',
+                        'event_tickets.sold as Sold_tickets',
+                        DB::raw('(event_tickets.quantity - event_tickets.sold) as Remaining_tickets')
+                    )->get();
+
+
+        return response()->json($tickets);
+    }
     //REMOVE TICKET TO EVENT 
     public function removeTicketAssignment($eventId, $ticketTypeId){
         $assignedTicket = DB::table('event_tickets')->where('event_id', $eventId)->where('ticket_type_id', $ticketTypeId)->first();
